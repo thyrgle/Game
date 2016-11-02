@@ -115,7 +115,6 @@ class Board():
         for row in self.get_rows():
             for i in range(len(row)):
                 attr_list[i].append(row[i]) #if there are shared attributes
-        print(attr_list)
         for lst in attr_list:
             if self.shared_attributes(lst):
                 return True
