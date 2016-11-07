@@ -1,6 +1,6 @@
 DRAW = "D"
 WIN = "W"
-UNDECIDED  ="U"
+UNDECIDED = "U"
 LOSE = "L"
 TIE = "T"
 
@@ -35,7 +35,7 @@ class Piece():
         else:
             self.full_name += " hollow-top"
             self.abbreviation += "H"
-    
+
     # returns a list of attributes
     def get_attributes(self):
         return self.attributes
@@ -45,15 +45,16 @@ class Piece():
 
     def get_piece_abbr(self):
         return self.abbreviation
-    
-class Board(): 
+
+class Board():
     pieces = []
     cols_count = 4
     rows_count = 4
     board = None
-  
+
     def __init__(self):
-        self.board = [[None for x in range(self.cols_count)] for y in range(self.rows_count)] 
+        self.board = [[None for x in range(self.cols_count)] for y in
+                      range(self.rows_count)]
         #short: 0, tall: 1
         #black: 0, white: 1
         #circle: 0, square: 1
@@ -82,11 +83,12 @@ class Board():
         return self.pieces
 
     def get_pieces_names(self):
-        return ["(" + str(i) + "): " + self.pieces[i].get_piece_name() for i in range(0, len(self.pieces))]
-  
+        return ["(" + str(i) + "): " + self.pieces[i].get_piece_name()
+                for i in range(0, len(self.pieces))]
+
     def get_rows(self):
         return self.board
-  
+
     def get_cols(self):
         cols = []
         for row in self.board:
@@ -94,7 +96,8 @@ class Board():
         return cols
 
     def shared_attributes(self, lst): #finds list of shared attributes among pieces
-        attributes_list = [piece.get_attributes() for piece in lst if piece] #nested list of all attributes
+        attributes_list = [piece.get_attributes() for piece in lst
+                           if piece] #nested list of all attributes
         if len(attributes_list) != self.rows_count:
             return 0
         win = 0b1111
@@ -103,7 +106,7 @@ class Board():
             win = win & attr
             win2 = win2 & ~attr
         return win or win2
-    
+
     def check_win_horizontal(self):
         for row in self.get_rows(): #0 to 3
             if self.shared_attributes(row): #if there are shared attributes
@@ -119,7 +122,7 @@ class Board():
             if self.shared_attributes(lst):
                 return True
         return False
-       
+
     def check_win_diagonal(self):
         ltr_diag = []
         rtl_diag = []
@@ -127,12 +130,13 @@ class Board():
         for row in self.board:
             ltr_diag += [row[i]]
             rtl_diag += [row[j]]
-            i+=1
-            j-=1
-        if self.shared_attributes(ltr_diag) or self.shared_attributes(rtl_diag):
+            i += 1
+            j -= 1
+        if (self.shared_attributes(ltr_diag) or
+                self.shared_attributes(rtl_diag)):
             return True
         return False
-  
+
     def player(self):
         if len(self.pieces)%2 == 0:
             return 1
@@ -153,8 +157,8 @@ class Board():
                     pr.append(piece.get_piece_abbr())
                 else:
                     pr.append(None)
-            print(pr)
-  
+            print pr
+
     def place_piece(self, piece, row, col):
         if not self.board[row][col] and piece in self.pieces:
             self.board[row][col] = piece
@@ -164,54 +168,59 @@ class Board():
         else:
             return False
 
-quarto_board = None 
+quarto_board = None
 
 def initial_position():
-    # 2d array: 4x4 initialized to 
-    return Board() 
+    # 2d array: 4x4 initialized to
+    return Board()
 
 # takes in a 4x4 array - state is of class Board
 def primitive(state):
-    if state.check_win_horizontal() or state.check_win_vertical() or state.check_win_diagonal():
+    if (state.check_win_horizontal() or state.check_win_vertical() or
+            state.check_win_diagonal()):
         return WIN
     # no more pieces
     if len(state.pieces) == 0:
         return TIE
     return UNDECIDED
-  
+
 def gen_moves(state):
   # possible pieces for your opponent to give you
-  return state.get_pieces_names()
-  
+    return state.get_pieces_names()
+
 def do_move(move, state):
   #unpack
   # move = (piece, row, col)
-  state.place_piece(move[0], move[1], move[2])
-  return state
+    state.place_piece(move[0], move[1], move[2])
+    return state
 
 def solve(state):
     return primitive(state)
-    
+
 def main():
-    print("Starting game of Quarto...")
+    print "Starting game of Quarto..."
     print()
     board = initial_position()
     while True:
-        print("------------")
+        print "------------"
         print("Player", board.player(), "'s turn: ")
-        print("------------")
-        print("Current state of board: ")
+        print "------------"
+        print "Current state of board: "
         board.print_board()
         print()
-        print("Available pieces: ")
-        print(gen_moves(board))
+        print "Available pieces: "
+        print gen_moves(board)
         print()
-        piece_index = input("Player " +str(board.other_player())+ " please pick a piece to give to Player " + str(board.player()) +" (index num): ")
+        piece_index = input("Player " +str(board.other_player()) +
+                            " please pick a piece to give to Player "
+                            + str(board.player()) +
+                            " (index num): ")
         p = board.get_pieces()[int(piece_index)]
-        print("Player " + str(board.player()) + " choose where you want to place " + p.get_piece_name() + "...")
+        print("Player " + str(board.player()) +
+              " choose where you want to place " + p.get_piece_name() + "...")
         r = input("Row: ")
         c = input("Col: ")
-        do_move((p,int(r), int(c)), board)
+        do_move((p, int(r), int(c)), board)
         if solve(board) == WIN:
             board.print_board()
             print("Player", board.other_player(), "wins!")
@@ -221,15 +230,3 @@ def main():
         print()
 
 main()
-
-
-    
-  
-  
-  
-  
-  
-  
-  
-  
-    
